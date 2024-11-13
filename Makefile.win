@@ -1,0 +1,25 @@
+CCFLAGS = /nologo /O2
+
+all: build/testbench.exe build/rtap.dll
+
+build/rtap_adpcm.obj: src/rtap_adpcm.c src/rtap_adpcm.h src/rtap_river.h src/rtap_spring.h
+	$(CC) $(CCFLAGS) /Fo:"build\\" /c src/rtap_adpcm.c
+
+build/rtap_river.obj: src/rtap_river.c src/rtap_river.h src/rtap_spring.h
+	$(CC) $(CCFLAGS) /Fo:"build\\" /c src/rtap_river.c
+
+build/rtap_spring.obj: src/rtap_spring.c src/rtap_spring.h
+	$(CC) $(CCFLAGS) /Fo:"build\\" /c src/rtap_spring.c
+
+build/main.obj: src/main.c
+	$(CC) $(CCFLAGS) /Fo:"build\\" /c src/main.c
+
+build/rtap.dll: build/rtap_adpcm.obj build/rtap_river.obj build/rtap_spring.obj
+	$(CC) $(CCFLAGS) /Fe:"build\rtap.dll" /LD $**
+
+build/testbench.exe: build/main.obj build/rtap_adpcm.obj build/rtap_river.obj build/rtap_spring.obj
+	$(CC) $(CCFLAGS) /Fe:"build\testbench.exe" $**
+
+clean:
+	del /F /S /Q build
+	rmdir /S /Q build
